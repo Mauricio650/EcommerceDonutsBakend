@@ -59,11 +59,9 @@ export class ControllerUser {
 
   changePassword = async (req, res) => {
     const token = req.cookies.access_token
-    console.log(token)
     const result = validatePartialSchemaUser(req.body) /* {newPassword, password} */
 
     const data = jwt.verify(token, JWT_SECRET)
-    console.log(data)
     if (!data) return res.status(401).json({ message: 'access not authorized' })
 
     if (!result.success) {
