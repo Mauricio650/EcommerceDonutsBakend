@@ -1,0 +1,18 @@
+
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "username": "Mau31",
+    "password": "Uvabombom31"
+}
+
+###
+PATCH  http://localhost:3000/updatePassword
+Content-Type: application/json
+Cookie: access_token= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNYXUzMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1Njk0MzQ2MiwiZXhwIjoxNzU2OTQ0NjYyfQ.XcU7_N5_CbTqC0sfiS3DrqaZJqmnmkKeVYPlq0Oh7GM
+
+{
+    "newPassword": "Uvabombom32",
+    "password": "Uvabombom31"
+}

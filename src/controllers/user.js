@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { validateSchemaUser } from '../schemas/userSchema'
+import { validatePartialSchemaUser, validateSchemaUser } from '../schemas/userSchema.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -12,17 +12,17 @@ export class ControllerUser {
 
   login = async (req, res) => {
     /* validate the data sent in the body with the zod schema. */
-    const result = validateSchemaUser(req.body) /* {username: pepeitO31, password: Uvabombom31} */
+    const result = validatePartialSchemaUser(req.body) /* {username: password:} */
 
     /* check the validation status. If there is an error, we display an object indicating what the error is and what needs to be corrected. */
-    if (!result) {
+    if (!result.success) {
       const errors = {}
       result.error.issues.forEach(e => {
         errors.path = e.path
         errors.message = e.message
         return errors
       })
-      return res.status(400).json({ message: errors })
+      return res.status(422).json({ message: errors })
     }
 
     try {
@@ -30,23 +30,22 @@ export class ControllerUser {
       const user = await this.ModelUser.login({ credentials: result.data })
 
       /* create tokens for cookies, and add user's information */
-      const token = jwt.sign({ id: user.id, user: user.username, role: user.role }, JWT_SECRET, { expiresIn: '20m' })
-      const refreshToken = jwt.sign({ id: user.id, user: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
+      const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '20m' })
+      const refreshToken = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '7d' })
 
-      res.cookies('access_token', token, {
+      res.cookie('access_token', token, {
         httpOnly: true,
         sameSite: 'none',
         secure: true
 
       })
 
-      res.cookies('refresh_token', refreshToken, {
+      res.cookie('refresh_token', refreshToken, {
         httpOnly: true, /* cookie can not read o modified from js in the browser */
         sameSite: 'none', /* allow request from others domains, fronted and backend in different domains */
         secure: true /* cookie only is send by https */
 
       })
-
       /* return a object with user information */
       res.status(200).json({ message: user })
     } catch (error) {
@@ -55,6 +54,33 @@ export class ControllerUser {
         return res.status(400).json({ message: 'User or password is worng' })
       }
       return res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+
+  changePassword = async (req, res) => {
+    const token = req.cookies.access_token
+    console.log(token)
+    const result = validatePartialSchemaUser(req.body) /* {newPassword, password} */
+
+    const data = jwt.verify(token, JWT_SECRET)
+    console.log(data)
+    if (!data) return res.status(401).json({ message: 'access not authorized' })
+
+    if (!result.success) {
+      const errors = {}
+      result.error.issues.forEach(e => {
+        errors.path = e.path
+        errors.message = e.message
+        return errors
+      })
+      return res.status(422).json({ message: errors })
+    }
+
+    try {
+      const response = await this.ModelUser.changePassword({ passwords: result.data, username: data.username })
+      return res.status(200).json({ message: response })
+    } catch (error) {
+      return res.status(500).json({ message: error.message })
     }
   }
 }

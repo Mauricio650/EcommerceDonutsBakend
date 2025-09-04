@@ -1,10 +1,11 @@
 import { Router } from 'express'
 
-export function createUserRouter () {
+export function createUserRouter ({ Controller, Model }) {
   const userRouter = Router()
+  const controllerUser = new Controller({ ModelUser: Model })
 
-  userRouter.post('/login', (req, res) => console.log('/login'))
-  userRouter.patch('/updatePassword', (req, res) => console.log('/updatePassword'))
+  userRouter.post('/login', controllerUser.login)
+  userRouter.patch('/updatePassword', controllerUser.changePassword)
 
   return userRouter
 }
