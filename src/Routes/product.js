@@ -8,7 +8,7 @@ export function createProductRouter ({ Controller, Model }) {
   productRouter.get('/products', controllerProduct.getProducts)
   productRouter.post('/addproduct', upload.single('image'), (req, res) => controllerProduct.createProduct)
   productRouter.patch('/updateproduct/:id', upload.single('image'), controllerProduct.updateProduct)
-  productRouter.delete('/deleteproduct/:id', (req, res) => console.log('/deleteproducts'))
+  productRouter.delete('/deleteproduct/:id', controllerProduct.deleteProducts)
 
   return productRouter
 }

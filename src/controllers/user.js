@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { validatePartialSchemaUser, validateSchemaUser } from '../schemas/userSchema.js'
+import { validatePartialSchemaUser } from '../schemas/userSchema.js'
 import dotenv from 'dotenv'
 
 dotenv.config()

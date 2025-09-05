@@ -39,12 +39,24 @@ export class ControllerProduct {
     if (!id) { return res.status(400).json({ error: 'insert a valid id in the request' }) }
     const result = validatePartialSchemaProduct(req.body)
     if (!result.success) return res.status(422).json({ message: errorMappingZod(result) })
-
     try {
       await this.ModelProduct.updateProduct({ product: result.data, img, id })
       res.status(200).json({ message: 'Product updated!' })
     } catch (error) {
       res.status(500).json({ message: 'internal server error' })
+    }
+  }
+
+  deleteProducts = async (req, res) => {
+    const data = req.session.user
+    if (!data || data.role !== 'admin') res.status(401).json({ message: 'Unauthorize' })
+    const { id } = req.params
+    if (!id) { return res.status(400).json({ error: 'insert a valid id in the request' }) }
+
+    try {
+      await this.ModelProduct.deleteProducts({ id })
+    } catch (error) {
+
     }
   }
 }

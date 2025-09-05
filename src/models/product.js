@@ -43,4 +43,14 @@ export class ModelProduct {
       throw new Error('Error updating table')
     }
   }
+
+  static async deleteProducts ({ id }) {
+    try {
+      const [results] = await db.execute('SELECT id_img FROM products WHERE id = ?', [id])
+      await deleteImage({ publicId: results[0].id_img })
+      await db.execute('DELETE FROM products WHERE id = ?', [id])
+    } catch (error) {
+      throw new Error('Error deleting product', error)
+    }
+  }
 }
