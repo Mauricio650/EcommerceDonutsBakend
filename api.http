@@ -16,8 +16,8 @@ Content-Type: application/json
 Cookie: access_token= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNYXUzMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1Njk1MDY3MywiZXhwIjoxNzU2OTUxODczfQ.dETj-zywXA0YChLOlcdTkogurMB4lC3NjWH7ORWI5Z4
 
 {
-    "newPassword": "Uvabombom31",
-    "password": "Uvabombom32"
+    "newPassword": "Uvabombom32",
+    "password": "Uvabombom31"
 }
 
 ###

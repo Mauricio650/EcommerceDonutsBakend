@@ -1,6 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import helmet from 'helmet'
 import { corsOptions } from '../cors/cors.js'
 import { createUserRouter } from '../Routes/user.js'
 import { createProductRouter } from '../Routes/product.js'
@@ -10,9 +11,9 @@ import { ControllerProduct } from '../controllers/product.js'
 
 export function createApp ({ ModelUser, ModelProduct }) {
   const app = express()
-  app.disable('x-powered-by')
   app.use(express.json())
   app.use(cors(corsOptions))
+  app.use(helmet())
   app.use(cookieParser())
   app.get('/', (req, res) => {
     res.status(200).json({ message: 'Hello world!' })
