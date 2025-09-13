@@ -16,9 +16,10 @@ export class ModelProduct {
     const fileBuffer = img.buffer
     try {
       const data = await uploadImage({ fileBuffer })
-      await db.execute('INSERT INTO `products` (type, name,price,units,toppings,url_img,id_img) VALUES (?,?,?,?,?,?,?)',
+      const [result] = await db.execute('INSERT INTO `products` (type, name,price,units,toppings,url_img,id_img) VALUES (?,?,?,?,?,?,?)',
         [product.type, product.name, product.price, product.units, product.toppings, data.secure_url, data.public_id])
-      return 'Product inserted'
+      const idProduct = result.insertId
+      return idProduct
     } catch (error) {
       throw new Error('internal server error', error)
     }
@@ -36,11 +37,18 @@ export class ModelProduct {
 
     try {
       const columns = Object.entries(product).map(p => `${p[0]} = ?`).join(', ')
+      const values = []
+
+      // recorrer dinámicamente el objeto product
+      for (const [key, value] of Object.entries(product)) {
+        values.push(value)
+      }
       const fileBuffer = img.buffer
       const data = await uploadImage({ fileBuffer })
-      await db.execute(`UPDATE products SET ${columns} url_img = ? id_img = ? WHERE id = ?`, [product, data.secure_url, data.public_id, id])
+      values.push(data.secure_url, data.public_id, id)
+      await db.execute(`UPDATE products SET ${columns}, url_img = ?, id_img = ? WHERE id = ?`, values)
     } catch (error) {
-      throw new Error('Error updating table')
+      throw new Error(error.message)
     }
   }
 

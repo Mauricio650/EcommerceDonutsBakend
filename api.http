@@ -13,7 +13,7 @@ Content-Type: application/json
 ###
 PATCH  http://localhost:3000/updatePassword
 Content-Type: application/json
-Cookie: access_token= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNYXUzMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1Njk1MDY3MywiZXhwIjoxNzU2OTUxODczfQ.dETj-zywXA0YChLOlcdTkogurMB4lC3NjWH7ORWI5Z4
+Cookie:access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJNYXUzMSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NzExOTU4NCwiZXhwIjoxNzU3MTIwNzg0fQ.4oGgFx0ONG3zWBBZtNGt-7R6eCon3mlNtJqZOY26t78
 
 {
     "newPassword": "Uvabombom32",
@@ -22,4 +22,4 @@ Cookie: access_token= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hb
 
 ###
 GET http://localhost:3000/products
-Content-Type: application/json
+

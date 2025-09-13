@@ -7,5 +7,4 @@ export const errorMappingZod = (result) => {
       return errors
     })
   }
-  return true
 }

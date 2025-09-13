@@ -24,8 +24,8 @@ export class ControllerProduct {
     if (!result.success) return res.status(422).json({ message: errorMappingZod(result) })
 
     try {
-      await this.ModelProduct.createProduct({ product: result.data, img })
-      res.status(201).json({ message: 'Product created!' })
+      const idProduct = await this.ModelProduct.createProduct({ product: result.data, img })
+      res.status(201).json({ message: 'Product created!', id: idProduct })
     } catch (error) {
       res.status(500).json({ message: 'internal server error' })
     }
@@ -43,6 +43,7 @@ export class ControllerProduct {
       await this.ModelProduct.updateProduct({ product: result.data, img, id })
       res.status(200).json({ message: 'Product updated!' })
     } catch (error) {
+      console.log(error.message)
       res.status(500).json({ message: 'internal server error' })
     }
   }
@@ -55,8 +56,9 @@ export class ControllerProduct {
 
     try {
       await this.ModelProduct.deleteProducts({ id })
+      res.status(200).json({ message: 'Product deleted' })
     } catch (error) {
-
+      res.status(500).json({ message: 'INTERNAL SERVER ERROR' })
     }
   }
 }

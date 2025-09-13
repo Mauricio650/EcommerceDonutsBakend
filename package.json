@@ -5,30 +5,39 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js  --verbose --detectOpenHandles",
     "start": "node --watch app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "eslintConfig": {
-    "extends": "standard"
+    "extends": "standard",
+    "env": {
+      "jest": true
+    }
   },
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^2.7.0",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "mysql2": "^3.14.4",
-    "streamifier": "^0.1.1",
-    "zod": "^4.1.5"
+    "bcrypt": "6.0.0",
+    "cloudinary": "2.7.0",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "17.2.1",
+    "express": "5.1.0",
+    "helmet": "8.1.0",
+    "jsonwebtoken": "9.0.2",
+    "multer": "2.0.2",
+    "mysql2": "3.14.4",
+    "streamifier": "0.1.1",
+    "zod": "4.1.5"
   },
   "devDependencies": {
-    "standard": "^17.1.2"
+    "jest": "30.1.3",
+    "standard": "17.1.2",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
   }
 }
