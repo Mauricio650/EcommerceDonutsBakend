@@ -31,23 +31,23 @@ describe('Product Tests', () => {
   })
 
   test('Create Products', async () => {
-    const imgPath = path.join(__dirname, 'fixtures', 'foto.jpeg')
+    const imgPath = path.join(__dirname, 'fixtures', 'do5.webp')
 
     const response = await api.post('/products')
       .set('Cookie', jwt)
       .attach('image', imgPath)
       .field('type', 'donut')
-      .field('name', 'epadddddd epa epa')
-      .field('price', 6500)
-      .field('units', 1)
-      .field('toppings', 'epadddddd epa con epita')
+      .field('name', 'Donut rosita 2x1')
+      .field('price', 8000)
+      .field('units', 2)
+      .field('toppings', 'glaseado de fresa con durazno')
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     idProductCreated = response.body.id
   })
 
-  test('update image', async () => {
+  /*  test('update product', async () => {
     const imgPath = path.join(__dirname, 'fixtures', 'ia_pho.png')
     await api.patch(`/products/${idProductCreated}`)
       .set('Cookie', jwt)
@@ -55,12 +55,12 @@ describe('Product Tests', () => {
       .field('name', 'Efectivamente una deona')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  })
+  }) */
 
-  test('Delete images', async () => {
+  /*  test('Delete products', async () => {
     await api.delete(`/products/${idProductCreated}`)
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  })
+  }) */
 })

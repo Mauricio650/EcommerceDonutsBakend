@@ -9,30 +9,30 @@ import { ControllerUser } from '../controllers/user.js'
 import jwt from 'jsonwebtoken'
 import { ControllerProduct } from '../controllers/product.js'
 
-export function createApp ({ ModelUser, ModelProduct }) {
+export function createApp ({ ModelUser, ModelProduct }) { /* dependencies inversion - MODELS */
   const app = express()
   app.use(express.json())
   app.use(cors(corsOptions))
   app.use(helmet())
   app.use(cookieParser())
-  app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Hello world!' })
+
+  app.get('/products', async (req, res) => {
+    try {
+      const products = await ModelProduct.getProducts()
+      res.status(200).json({ products })
+    } catch (error) {
+      res.status(500).json({ message: 'internal server error' })
+    }
   })
 
   app.use(createUserRouter({ Controller: ControllerUser, Model: ModelUser }))
 
   app.use('/', (req, res, next) => {
     const token = req.cookies.access_token
-    const refreshToken = req.cookies.refresh_token
     req.session = { user: null }
     try {
-      if (token) {
-        const data = jwt.verify(token, process.env.JWT_SECRET_KEY)
-        req.session.user = data
-      } else if (refreshToken) {
-        const dataR = jwt.verify(refreshToken, process.env.JWT_SECRET_KEY)
-        req.session.user = dataR
-      }
+      const data = jwt.verify(token, process.env.JWT_SECRET_KEY)
+      req.session.user = data
     } catch (error) {
       return res.status(401).json({ error: 'access not authorized' })
     }

@@ -6,16 +6,7 @@ export class ControllerProduct {
     this.ModelProduct = ModelProduct
   }
 
-  getProducts = async (req, res) => {
-    try {
-      const products = await this.ModelProduct.getProducts()
-      res.status(200).json({ message: products })
-    } catch (error) {
-      res.status(500).json({ message: 'internal server error' })
-    }
-  }
-
-  createProduct = async (req, res) => {
+  createProduct = async (req, res) => { /* 619 × 403 this dimensions is the limit for te images */
     const data = req.session.user
     if (!data || data.role !== 'admin') res.status(401).json({ message: 'Unauthorize' })
     const img = req.file
