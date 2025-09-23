@@ -26,29 +26,29 @@ export class ModelProduct {
   }
 
   static async updateProduct ({ product, img, id }) {
-    try {
-      if (img) {
-        const [results] = await db.execute('SELECT id_img FROM products WHERE id = ?', [id])
-        await deleteImage({ publicId: results[0].id_img })
-      }
-    } catch (error) {
-      throw new Error('Error deleting invoice')
+    const columns = Object.entries(product).map(p => `${p[0]} = ?`).join(', ') // nombres de las columnas que se van a actualizar
+    const values = []
+    // recorrer dinámicamente el objeto product y llenar el array con los valores actualizados
+    for (const [key, value] of Object.entries(product)) {
+      values.push(value)
     }
 
     try {
-      const columns = Object.entries(product).map(p => `${p[0]} = ?`).join(', ')
-      const values = []
+      if (img) {
+        const [results] = await db.execute('SELECT id_img FROM products WHERE id = ?', [id])
+        await deleteImage({ publicId: results[0].id_img }) // recuperamos el id de la imagen en la db y borramos la img de cloudinary
 
-      // recorrer dinámicamente el objeto product
-      for (const [key, value] of Object.entries(product)) {
-        values.push(value)
+        const fileBuffer = img.buffer
+        const data = await uploadImage({ fileBuffer }) // en estas 3 lineas guardamos la nueva img y agregamos al arreglo de valores actualizados la url y el id_img que nos da cloudinary y el id de la row en la db
+        values.push(data.secure_url, data.public_id, id)
+
+        await db.execute(`UPDATE products SET ${columns}, url_img = ?, id_img = ? WHERE id = ?`, values)
+      } else {
+        values.push(id) // metemos el id del producto en al db para el 'where'
+        await db.execute(`UPDATE products SET ${columns} WHERE id = ?`, values)
       }
-      const fileBuffer = img.buffer
-      const data = await uploadImage({ fileBuffer })
-      values.push(data.secure_url, data.public_id, id)
-      await db.execute(`UPDATE products SET ${columns}, url_img = ?, id_img = ? WHERE id = ?`, values)
     } catch (error) {
-      throw new Error(error.message)
+      throw new Error('Error deleting invoice')
     }
   }
 

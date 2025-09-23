@@ -4,7 +4,7 @@ export const errorMappingZod = (result) => {
     result.error.issues.forEach(e => {
       errors.path = e.path
       errors.message = e.message
-      return errors
     })
+    return errors
   }
 }

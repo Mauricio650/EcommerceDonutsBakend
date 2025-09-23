@@ -47,20 +47,20 @@ describe('Product Tests', () => {
     idProductCreated = response.body.id
   })
 
-  /*  test('update product', async () => {
-    const imgPath = path.join(__dirname, 'fixtures', 'ia_pho.png')
+  test('update product', async () => {
+    const imgPath = path.join(__dirname, 'fixtures', 'd1.webp')
     await api.patch(`/products/${idProductCreated}`)
       .set('Cookie', jwt)
       .attach('image', imgPath)
       .field('name', 'Efectivamente una deona')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  }) */
+  })
 
-  /*  test('Delete products', async () => {
+  test('Delete products', async () => {
     await api.delete(`/products/${idProductCreated}`)
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  }) */
+  })
 })

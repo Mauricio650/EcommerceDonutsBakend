@@ -8,7 +8,7 @@ export const uploadImage = ({ fileBuffer, folder = 'homerdonuts/products' }) => 
       {
         folder,
         quality: 'auto',
-        fetch_format: 'auto'
+        format: 'webp'
       },
       (error, result) => {
         if (error) reject(error)
