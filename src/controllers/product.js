@@ -35,7 +35,7 @@ export class ControllerProduct {
       res.status(200).json({ message: 'Product updated!' })
     } catch (error) {
       console.log(error.message)
-      res.status(500).json({ message: 'internal server error' })
+      res.status(500).json({ error: 'internal server error' })
     }
   }
 

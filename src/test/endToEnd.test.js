@@ -23,6 +23,14 @@ beforeAll(async () => {
   jwt = response.headers['set-cookie']
 })
 
+test('register', async () => {
+  await api.post('/register')
+    .set('Cookie', jwt)
+    .send({ username: 'Gab23', password: 'Uvabombom31' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
 describe('Product Tests', () => {
   test('Get products', async () => {
     await api.get('/products')

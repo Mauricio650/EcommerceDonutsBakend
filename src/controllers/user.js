@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { validatePartialSchemaUser } from '../schemas/userSchema.js'
+import { validatePartialSchemaUser, validateSchemaUser } from '../schemas/userSchema.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -56,12 +56,38 @@ export class ControllerUser {
     }
   }
 
+  register = async (req, res) => {
+    const token = req.cookies.access_token
+    const result = validatePartialSchemaUser(req.body)
+
+    const data = jwt.verify(token, JWT_SECRET)
+    if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
+
+    if (!result.success) { /* save path and message of errors on object */
+      const errors = {}
+      result.error.issues.forEach(e => {
+        errors.path = e.path
+        errors.message = e.message
+        return errors
+      })
+      return res.status(422).json({ message: errors })
+    }
+
+    try {
+      const response = await this.ModelUser.register({ newUser: result.data })
+      res.status(200).json({ message: response })
+    } catch (error) {
+      if (error.message === 'User already exists') res.status(409).json({ error: 'User already exists' })
+      res.status(500).json({ error: 'Internal server error' })
+    }
+  }
+
   changePassword = async (req, res) => {
     const token = req.cookies.access_token
     const result = validatePartialSchemaUser(req.body) /* {newPassword, password} */
 
     const data = jwt.verify(token, JWT_SECRET)
-    if (!data) return res.status(401).json({ message: 'access not authorized' })
+    if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
 
     if (!result.success) { /* save path and message of errors on object */
       const errors = {}

@@ -5,6 +5,7 @@ export function createUserRouter ({ Controller, Model }) {
   const controllerUser = new Controller({ ModelUser: Model })
 
   userRouter.post('/login', controllerUser.login)
+  userRouter.post('/register', controllerUser.register)
   userRouter.post('/logOut', controllerUser.logOut)
   userRouter.patch('/updatePassword', controllerUser.changePassword)
   userRouter.get('/refreshToken', controllerUser.refreshToken)

@@ -10,6 +10,19 @@ export class ModelUser {
     return results[0]
   }
 
+  static async register ({ newUser }) {
+    const [result] = await db.execute('SELECT * FROM users WHERE username = ?', [newUser.username])
+    if (result[0]) throw new Error('User already exists')
+
+    try {
+      const hashedPassword = bcrypt.hashSync(newUser.password, 12)
+      await db.execute('INSERT users (username,password,role) VALUES (?,?,?)', [newUser.username, hashedPassword, 'admin'])
+      return newUser.username
+    } catch (error) {
+      throw new Error('Error creating user')
+    }
+  }
+
   static async changePassword ({ passwords, username }) {
     const [results] = await db.execute('SELECT * FROM `users` WHERE `username` = ?', [username])
     if (!results[0]) throw new Error('User not exists')
