@@ -6,8 +6,9 @@ export function createUserRouter ({ Controller, Model }) {
 
   userRouter.post('/login', controllerUser.login)
   userRouter.post('/register', controllerUser.register)
+  userRouter.delete('/deleteUser/:id', controllerUser.deleteUser)
   userRouter.post('/logOut', controllerUser.logOut)
-  userRouter.patch('/updatePassword', controllerUser.changePassword)
+  userRouter.patch('/updatePassword/:id', controllerUser.changePassword)
   userRouter.get('/refreshToken', controllerUser.refreshToken)
   userRouter.get('/validateToken', controllerUser.validateToken)
 

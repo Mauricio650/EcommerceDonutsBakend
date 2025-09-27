@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename)
 const api = supertest(app)
 let jwt
 let idProductCreated
+let idUserCreated
 
 beforeAll(async () => {
   const response = await api.post('/login')
@@ -23,12 +24,47 @@ beforeAll(async () => {
   jwt = response.headers['set-cookie']
 })
 
-test('register', async () => {
-  await api.post('/register')
-    .set('Cookie', jwt)
-    .send({ username: 'Gab23', password: 'Uvabombom31' })
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+describe('Users Test', () => {
+  test('Register user', async () => {
+    const response = await api.post('/register')
+      .set('Cookie', jwt)
+      .send({ username: 'Xaz13', password: 'Zfagomhom56' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    idUserCreated = response.body.message
+  })
+
+  test('Update password', async () => {
+    await api.patch(`/updatePassword/${idUserCreated}`)
+      .set('Cookie', jwt)
+      .send({ newPassword: 'Zfagomhom57', password: 'Zfagomhom56' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('RefreshToken', async () => {
+    const response = await api.get('/refreshToken')
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    jwt = response.headers['set-cookie']
+  })
+
+  test('Validate Tokens', async () => {
+    await api.get('/validateToken')
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('Delete user', async () => {
+    await api.delete(`/deleteUser/${idUserCreated}`)
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
 describe('Product Tests', () => {
@@ -71,4 +107,11 @@ describe('Product Tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
+})
+
+afterAll(async () => {
+  await api.post('/logOut')
+    .set('Cookie', jwt)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
 })
