@@ -31,17 +31,26 @@ export class ModelUser {
     }
   }
 
-  static async changePassword ({ passwords, id }) {
-    const [results] = await db.execute('SELECT * FROM `users` WHERE id = ?', [id])
-    if (!results[0]) throw new Error('User not exists')
-    const checkPassword = bcrypt.compareSync(passwords.password, results[0].password)
-    if (!checkPassword) throw new Error('Password is wrong')
-    const passwordHashed = await bcrypt.hash(passwords.newPassword, 12)
+  static async changePassword ({ newPassword, id }) {
+    const passwordHashed = await bcrypt.hash(newPassword.newPassword, 12)
 
     try {
       await db.execute('UPDATE `users` SET `password` = ? WHERE `id` = ?', [passwordHashed, id])
     } catch (error) {
       throw new Error('Error updating table users')
+    }
+  }
+
+  static async userList () {
+    try {
+      const [result] = await db.execute('SELECT * FROM users')
+      const userArray = []
+      result.forEach(u => {
+        userArray.push({ username: u.username, role: u.role, id: u.id })
+      })
+      return userArray
+    } catch (error) {
+      throw new Error('Error getting users')
     }
   }
 }

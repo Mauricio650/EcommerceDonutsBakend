@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { validatePartialSchemaUser, validateSchemaUser } from '../schemas/userSchema.js'
+import { validatePartialSchemaUser } from '../schemas/userSchema.js'
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -99,7 +99,7 @@ export class ControllerUser {
 
   changePassword = async (req, res) => {
     const token = req.cookies.access_token
-    const result = validatePartialSchemaUser(req.body) /* {newPassword, password} */
+    const result = validatePartialSchemaUser(req.body) /* {newPassword} */
     const { id } = req.params
 
     const data = jwt.verify(token, JWT_SECRET)
@@ -116,7 +116,7 @@ export class ControllerUser {
     }
 
     try {
-      const response = await this.ModelUser.changePassword({ passwords: result.data, id })
+      const response = await this.ModelUser.changePassword({ newPassword: result.data, id })
       return res.status(200).json({ message: response })
     } catch (error) {
       return res.status(500).json({ message: error.message })
@@ -164,5 +164,19 @@ export class ControllerUser {
     res.clearCookie('access_token')
     res.clearCookie('refresh_token')
     res.status(200).json({ message: 'Log out successfully' })
+  }
+
+  userList = async (req, res) => {
+    const token = req.cookies.access_token
+    const data = jwt.verify(token, JWT_SECRET)
+
+    if (!data || data.role !== 'admin') res.status(401).json({ message: 'access not authorized' })
+
+    try {
+      const users = await this.ModelUser.userList()
+      res.status(200).json({ message: users })
+    } catch (error) {
+      res.status(500).json({ error: 'Internal server error' })
+    }
   }
 }

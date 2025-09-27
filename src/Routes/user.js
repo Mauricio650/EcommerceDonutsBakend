@@ -11,6 +11,7 @@ export function createUserRouter ({ Controller, Model }) {
   userRouter.patch('/updatePassword/:id', controllerUser.changePassword)
   userRouter.get('/refreshToken', controllerUser.refreshToken)
   userRouter.get('/validateToken', controllerUser.validateToken)
+  userRouter.get('/userList', controllerUser.userList)
 
   return userRouter
 }

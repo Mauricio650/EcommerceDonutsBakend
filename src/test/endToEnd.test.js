@@ -38,7 +38,7 @@ describe('Users Test', () => {
   test('Update password', async () => {
     await api.patch(`/updatePassword/${idUserCreated}`)
       .set('Cookie', jwt)
-      .send({ newPassword: 'Zfagomhom57', password: 'Zfagomhom56' })
+      .send({ newPassword: 'Zfagomhom57' })
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
@@ -54,6 +54,13 @@ describe('Users Test', () => {
 
   test('Validate Tokens', async () => {
     await api.get('/validateToken')
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('Users list', async () => {
+    await api.get('/userList')
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
