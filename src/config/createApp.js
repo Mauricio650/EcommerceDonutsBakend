@@ -8,8 +8,10 @@ import { createProductRouter } from '../Routes/product.js'
 import { ControllerUser } from '../controllers/user.js'
 import jwt from 'jsonwebtoken'
 import { ControllerProduct } from '../controllers/product.js'
+import { createSalesRouter } from '../Routes/sales.js'
+import { ControllerSales } from '../controllers/sales.js'
 
-export function createApp ({ ModelUser, ModelProduct }) { /* dependencies inversion - MODELS */
+export function createApp ({ ModelUser, ModelProduct, ModelSales }) { /* dependencies inversion - MODELS */
   const app = express()
   app.use(express.json())
   app.use(cors(corsOptions))
@@ -25,6 +27,7 @@ export function createApp ({ ModelUser, ModelProduct }) { /* dependencies invers
     }
   })
 
+  app.use(createSalesRouter({ Controller: ControllerSales, Model: ModelSales }))
   app.use(createUserRouter({ Controller: ControllerUser, Model: ModelUser }))
 
   app.use('/', (req, res, next) => {

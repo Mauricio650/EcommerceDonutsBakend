@@ -10,9 +10,10 @@ const api = supertest(app)
 let jwt
 let idProductCreated
 let idUserCreated
+let idSaleCreated
 
 beforeAll(async () => {
-  const response = await api.post('/login')
+  const response = await api.post('/user/login')
     .send(
       {
         username: 'Mau31',
@@ -26,7 +27,7 @@ beforeAll(async () => {
 
 describe('Users Test', () => {
   test('Register user', async () => {
-    const response = await api.post('/register')
+    const response = await api.post('/user/register')
       .set('Cookie', jwt)
       .send({ username: 'Xaz13', password: 'Zfagomhom56' })
       .expect(200)
@@ -36,7 +37,7 @@ describe('Users Test', () => {
   })
 
   test('Update password', async () => {
-    await api.patch(`/updatePassword/${idUserCreated}`)
+    await api.patch(`/user/updatePassword/${idUserCreated}`)
       .set('Cookie', jwt)
       .send({ newPassword: 'Zfagomhom57' })
       .expect(200)
@@ -44,7 +45,7 @@ describe('Users Test', () => {
   })
 
   test('RefreshToken', async () => {
-    const response = await api.get('/refreshToken')
+    const response = await api.get('/user/refreshToken')
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -53,21 +54,21 @@ describe('Users Test', () => {
   })
 
   test('Validate Tokens', async () => {
-    await api.get('/validateToken')
+    await api.get('/user/validateToken')
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
   test('Users list', async () => {
-    await api.get('/userList')
+    await api.get('/user/userList')
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
 
   test('Delete user', async () => {
-    await api.delete(`/deleteUser/${idUserCreated}`)
+    await api.delete(`/user/deleteUser/${idUserCreated}`)
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -116,8 +117,33 @@ describe('Product Tests', () => {
   })
 })
 
+describe('Sales tests', () => {
+  test('Create a sale', async () => {
+    const response = await api.post('/sales')
+      .send({ sale: [['DonutNew', 9400, 'donut', 3]] })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    idSaleCreated = response.body.id
+  })
+
+  test('Delete a sale', async () => {
+    await api.delete(`/sales/${idSaleCreated}`)
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('Get total sales by month', async () => {
+    await api.get('/sales/totalCurrentMonth')
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+})
+
 afterAll(async () => {
-  await api.post('/logOut')
+  await api.post('/user/logOut')
     .set('Cookie', jwt)
     .expect(200)
     .expect('Content-Type', /application\/json/)
