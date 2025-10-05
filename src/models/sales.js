@@ -2,8 +2,8 @@ import { db } from '../config/db.js'
 
 export class ModelSales {
   static async createSale ({ sale }) {
-    const placeHolders = sale.map(v => '(?,?,?,?)')
-    const query = `INSERT INTO sales (name, price, type, quantity) VALUES ${placeHolders}`
+    const placeHolders = sale.map(v => '(?,?,?,?,?)')
+    const query = `INSERT INTO sales (name, price, type, quantity, client_id) VALUES ${placeHolders}`
     try {
       const [result] = await db.execute(query, sale.flat())
       return result.insertId
@@ -29,6 +29,23 @@ export class ModelSales {
       await db.execute('DELETE FROM sales WHERE id = ?', [id])
     } catch (error) {
       throw new Error('internal server error')
+    }
+  }
+
+  static async createClient ({ client }) {
+    try {
+      const [result] = await db.execute('INSERT INTO clients (name,phone_number,email,address,pay_reference) VALUES (?,?,?,?,?)', Object.values(client))
+      return result.insertId
+    } catch (error) {
+      throw new Error('Error creating client')
+    }
+  }
+
+  static async deleteClient ({ id }) {
+    try {
+      await db.execute('DELETE FROM clients WHERE id = ?', [id])
+    } catch (error) {
+      throw new Error('Error deleting client')
     }
   }
 }

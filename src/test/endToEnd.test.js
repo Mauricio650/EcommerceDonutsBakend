@@ -11,6 +11,7 @@ let jwt
 let idProductCreated
 let idUserCreated
 let idSaleCreated
+let idClientCreated
 
 beforeAll(async () => {
   const response = await api.post('/user/login')
@@ -118,9 +119,25 @@ describe('Product Tests', () => {
 })
 
 describe('Sales tests', () => {
+  test('Create a client', async () => {
+    const response = await api.post('/sales/clients')
+      .send({
+        name: 'a ver y te creo',
+        phoneNumber:
+        '14523698770',
+        email: 'test@gmail.com',
+        address: 'cra test con 58 test',
+        payReference: 'MTtesttestes01'
+      })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    idClientCreated = response.body.idClient
+  })
+
   test('Create a sale', async () => {
     const response = await api.post('/sales')
-      .send({ sale: [['DonutNew', 9400, 'donut', 3]] })
+      .send({ sale: [['donut test', 9400, 'donut', 3, idClientCreated]] })
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -129,6 +146,13 @@ describe('Sales tests', () => {
 
   test('Delete a sale', async () => {
     await api.delete(`/sales/${idSaleCreated}`)
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('Delete a client', async () => {
+    await api.delete(`/sales/clients/${idClientCreated}`)
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
