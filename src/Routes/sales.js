@@ -9,6 +9,7 @@ export function createSalesRouter ({ Controller, Model }) {
   salesRouter.delete('/sales/:id', controllerSales.deleteSaleById)
   salesRouter.post('/sales/clients', controllerSales.createClient)
   salesRouter.delete('/sales/clients/:id', controllerSales.deleteClient)
+  salesRouter.get('/sales/clients/orders', controllerSales.ordersByClient)
 
   return salesRouter
 }

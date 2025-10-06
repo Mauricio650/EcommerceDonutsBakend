@@ -73,4 +73,17 @@ export class ControllerSales {
       res.status(500).json({ message: 'Internal server error' })
     }
   }
+
+  ordersByClient = async (req, res) => {
+    const token = req.cookies.access_token
+    const data = jwt.verify(token, JWT_SECRET)
+    if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
+    try {
+      const orders = await this.ModelSales.ordersByClient()
+      console.log(orders)
+      res.status(200).json({ message: orders })
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' })
+    }
+  }
 }

@@ -164,6 +164,13 @@ describe('Sales tests', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
   })
+
+  test('get orders by client', async () => {
+    await api.get('/sales/clients/orders')
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
 afterAll(async () => {

@@ -48,4 +48,42 @@ export class ModelSales {
       throw new Error('Error deleting client')
     }
   }
+
+  static async ordersByClient () {
+    try {
+      /* make a request to get orders by client */
+      const [result] = await db.execute(`
+        SELECT
+        c.name, c.phone_number, c.email, c.address, c.pay_reference,
+        c.status_order, s.name as product, s.price, s.type, s.quantity, 
+        s.client_id, c.id FROM clients AS c
+        INNER JOIN sales AS s ON s.client_id = c.id`)
+
+      /* make a reduce for organize de information by client in a object */
+      const orders = result.reduce((acc, cv) => {
+        if (Object.hasOwn(acc, `client_${cv.id}`)) {
+          acc[`client_${cv.id}`].orders.push({ product: cv.product, quantity: cv.quantity, price: cv.price })
+        } else {
+          (
+            acc[`client_${cv.id}`] = {
+              id: cv.id,
+              name: cv.name,
+              phone: cv.phone_number,
+              email: cv.email,
+              address: cv.address,
+              payReference: cv.pay_reference,
+              statusOrder: cv.status_order,
+              orders: [{ product: cv.product, quantity: cv.quantity, price: cv.price }]
+            }
+
+          )
+        }
+        return acc
+      }, {})
+      /* return a array of objects for each client */
+      return Object.values(orders)
+    } catch (error) {
+      throw new Error('Error getting orders by client')
+    }
+  }
 }
