@@ -26,9 +26,15 @@ export class ControllerSales {
     if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
 
     try {
-      const total = await this.ModelSales.totalCurrentMonth()
-      const totalMonth = Number(total[0].total_sales) + Number(total[1].total_sales)
-      res.status(200).json({ donut_total: Number(total[0].total_sales).toLocaleString('es-CO'), strawberriesAndCream_total: Number(total[1].total_sales).toLocaleString('es-CO'), salesTotalByMonth: totalMonth.toLocaleString('es-CO') })
+      const {
+        totalMonth,
+        strawberriesAndCreamTotal, donutTotal
+      } = await this.ModelSales.totalCurrentMonth()
+      res.status(200).json({
+        donut_total: donutTotal,
+        strawberriesAndCream_total: strawberriesAndCreamTotal,
+        salesTotalByMonth: totalMonth
+      })
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' })
     }
@@ -80,8 +86,21 @@ export class ControllerSales {
     if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
     try {
       const orders = await this.ModelSales.ordersByClient()
-      console.log(orders)
       res.status(200).json({ message: orders })
+    } catch (error) {
+      res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+
+  orderStatus = async (req, res) => {
+    const token = req.cookies.access_token
+    const data = jwt.verify(token, JWT_SECRET)
+    const { id } = req.params
+    if (!id) return res.status(400).json({ message: 'verify the id in the params of url' })
+    if (!data || data.role !== 'admin') return res.status(401).json({ message: 'access not authorized' })
+    try {
+      const idUpdated = await this.ModelSales.orderStatus({ id })
+      res.status(200).json({ message: 'Order updated', idUpdated })
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' })
     }

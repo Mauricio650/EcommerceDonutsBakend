@@ -10,7 +10,6 @@ const api = supertest(app)
 let jwt
 let idProductCreated
 let idUserCreated
-let idSaleCreated
 let idClientCreated
 
 beforeAll(async () => {
@@ -136,16 +135,21 @@ describe('Sales tests', () => {
   })
 
   test('Create a sale', async () => {
-    const response = await api.post('/sales')
+    await api.post('/sales')
       .send({ sale: [['donut test', 9400, 'donut', 3, idClientCreated]] })
       .expect(201)
       .expect('Content-Type', /application\/json/)
-
-    idSaleCreated = response.body.id
   })
 
   test('Delete a sale', async () => {
-    await api.delete(`/sales/${idSaleCreated}`)
+    await api.delete(`/sales/${idClientCreated}`)
+      .set('Cookie', jwt)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('Update status order', async () => {
+    await api.patch(`/sales/clients/orders/${idClientCreated}`)
       .set('Cookie', jwt)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -165,7 +169,7 @@ describe('Sales tests', () => {
       .expect('Content-Type', /application\/json/)
   })
 
-  test('get orders by client', async () => {
+  test('Get orders by client', async () => {
     await api.get('/sales/clients/orders')
       .set('Cookie', jwt)
       .expect(200)

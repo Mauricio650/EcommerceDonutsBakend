@@ -14,11 +14,15 @@ export class ModelSales {
 
   static async totalCurrentMonth () {
     try {
-      const [result] = await db.execute(`SELECT type, SUM(price * quantity) AS total_sales  FROM sales
+      const [result] = await db.execute(`
+        SELECT type, SUM(price * quantity) AS total_sales  FROM sales
                 WHERE created_at >= DATE_FORMAT(CURDATE(),'%Y-%m-01')
                 AND created_at < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01')
-                GROUP BY type;`)
-      return result
+                GROUP BY type`)
+      const donutTotal = result[0]?.total_sales || 0
+      const strawberriesAndCreamTotal = result[1]?.total_sales || 0
+      const totalMonth = Number(donutTotal) + Number(strawberriesAndCreamTotal)
+      return { totalMonth, strawberriesAndCreamTotal, donutTotal }
     } catch (error) {
       throw new Error('Error getting sales total')
     }
@@ -26,7 +30,7 @@ export class ModelSales {
 
   static async deleteSaleById ({ id }) {
     try {
-      await db.execute('DELETE FROM sales WHERE id = ?', [id])
+      await db.execute('DELETE FROM sales WHERE client_id = ?', [id])
     } catch (error) {
       throw new Error('internal server error')
     }
@@ -57,7 +61,7 @@ export class ModelSales {
         c.name, c.phone_number, c.email, c.address, c.pay_reference,
         c.status_order, s.name as product, s.price, s.type, s.quantity, 
         s.client_id, c.id FROM clients AS c
-        INNER JOIN sales AS s ON s.client_id = c.id`)
+        INNER JOIN sales AS s ON s.client_id = c.id  WHERE status_order = 'pending'`)
 
       /* make a reduce for organize de information by client in a object */
       const orders = result.reduce((acc, cv) => {
@@ -84,6 +88,15 @@ export class ModelSales {
       return Object.values(orders)
     } catch (error) {
       throw new Error('Error getting orders by client')
+    }
+  }
+
+  static async orderStatus ({ id }) {
+    try {
+      const [result] = await db.execute('UPDATE clients SET status_order = \'delivered\' WHERE id = ?', [id])
+      return result.id
+    } catch (error) {
+      throw new Error('Error deleting client')
     }
   }
 }

@@ -10,6 +10,7 @@ export function createSalesRouter ({ Controller, Model }) {
   salesRouter.post('/sales/clients', controllerSales.createClient)
   salesRouter.delete('/sales/clients/:id', controllerSales.deleteClient)
   salesRouter.get('/sales/clients/orders', controllerSales.ordersByClient)
+  salesRouter.patch('/sales/clients/orders/:id', controllerSales.orderStatus)
 
   return salesRouter
 }
