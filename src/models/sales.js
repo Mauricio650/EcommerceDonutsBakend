@@ -99,4 +99,13 @@ export class ModelSales {
       throw new Error('Error deleting client')
     }
   }
+
+  static async clientsList () {
+    try {
+      const [result] = await db.execute('SELECT id,name,phone_number,email,address FROM clients')
+      return result
+    } catch (error) {
+      throw new Error('Error getting invoices')
+    }
+  }
 }

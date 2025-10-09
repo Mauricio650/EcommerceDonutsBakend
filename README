@@ -1,0 +1,8 @@
+FOR CONTRIBUTING
+
+for create a new route you must:
+
+1-create a new routes (src/routes/)
+2-create a controller function (src/controllers/)
+3-create a model function (src/models/)
+4-add a new test for that route on (src/test/endToEnd.test.js)
