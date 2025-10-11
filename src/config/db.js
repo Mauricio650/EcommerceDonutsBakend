@@ -3,8 +3,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-/* https://dash.infinityfree.com/accounts/if0_40140980/databases */
-
 export const db = mysql.createPool({
   host: process.env.HOST_DB,
   port: process.env.PORT_DB,

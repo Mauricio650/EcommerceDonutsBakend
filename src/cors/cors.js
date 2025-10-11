@@ -1,4 +1,4 @@
-const allowedOrigins = ['http://localhost:5173']
+const allowedOrigins = ['http://localhost:5173', 'https://ecommerce-donuts.vercel.app']
 
 export const corsOptions = {
   origin: function (origin, callback) {
