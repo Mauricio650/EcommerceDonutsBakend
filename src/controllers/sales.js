@@ -113,7 +113,6 @@ export class ControllerSales {
 
     try {
       const list = await this.ModelSales.clientsList()
-      console.log(list)
       res.status(200).json({ list })
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' })
